@@ -107,30 +107,32 @@ doc.add_paragraph('API: RESTful API (Laravel Sanctum token-based authentication)
 doc.add_heading('3.2 Package yang Digunakan (pubspec.yaml)', level=2)
 doc.add_paragraph('Berikut adalah daftar package yang digunakan dalam pengembangan aplikasi mobile:')
 
-table = doc.add_table(rows=9, cols=2)
+table = doc.add_table(rows=9, cols=3)
 table.style = 'Table Grid'
 hdr = table.rows[0].cells
 hdr[0].text = 'Package'
-hdr[1].text = 'Fungsi'
+hdr[1].text = 'Versi'
+hdr[2].text = 'Fungsi'
 for cell in hdr:
     for paragraph in cell.paragraphs:
         for run in paragraph.runs:
             run.bold = True
 
 packages = [
-    ('cupertino_icons: ^1.0.8', 'Ikon gaya iOS untuk konsistensi UI'),
-    ('http: ^1.6.0', 'HTTP client untuk komunikasi dengan REST API backend'),
-    ('provider: ^6.1.5+1', 'State Management menggunakan ChangeNotifier pattern'),
-    ('shared_preferences: ^2.5.5', 'Penyimpanan data lokal (token auth, preferensi tema)'),
-    ('url_launcher: ^6.3.2', 'Membuka URL/file di browser eksternal'),
-    ('file_picker: ^11.0.2', 'Pemilihan file untuk upload lampiran forum'),
-    ('google_fonts: ^6.2.1', 'Font Poppins untuk konsistensi typography UI'),
-    ('flutter_svg: ^2.0.10', 'Render SVG assets (logo dan ikon)'),
+    ('cupertino_icons', '1.0.8', 'Ikon gaya iOS untuk konsistensi UI'),
+    ('http', '1.6.0', 'HTTP client untuk komunikasi dengan REST API backend'),
+    ('provider', '6.1.5+1', 'State Management menggunakan ChangeNotifier pattern'),
+    ('shared_preferences', '2.5.5', 'Penyimpanan data lokal (token auth, preferensi tema)'),
+    ('url_launcher', '6.3.2', 'Membuka URL/file di browser eksternal'),
+    ('file_picker', '11.0.2', 'Pemilihan file untuk upload lampiran forum'),
+    ('google_fonts', '6.2.1', 'Font Poppins untuk konsistensi typography UI'),
+    ('flutter_svg', '2.0.10', 'Render SVG assets (logo dan ikon)'),
 ]
-for i, (pkg, fungsi) in enumerate(packages):
+for i, (pkg, versi, fungsi) in enumerate(packages):
     row = table.rows[i + 1].cells
     row[0].text = pkg
-    row[1].text = fungsi
+    row[1].text = versi
+    row[2].text = fungsi
 
 doc.add_heading('3.3 Latar Belakang Pemilihan Database', level=2)
 doc.add_paragraph(
