@@ -1,0 +1,106 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>Panduan Setup Lognity</title>
+<style>
+    body { font-family: Calibri, sans-serif; line-height: 1.5; }
+    h1 { color: #2C3E50; font-size: 24pt; }
+    h2 { color: #34495E; font-size: 18pt; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    h3 { color: #2980B9; font-size: 14pt; }
+    pre { background-color: #f4f4f4; padding: 10px; border: 1px solid #ddd; font-family: Consolas, monospace; }
+    code { font-family: Consolas, monospace; background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+    .note { background-color: #eaf2f8; padding: 10px; border-left: 4px solid #3498db; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<h1>Panduan Setup Project Lognity (Website & Mobile)</h1>
+
+<p>Untuk menjalankan project website (Laravel) dan aplikasi mobile (Flutter) ini di perangkat lain, Anda perlu mengikuti tahapan instalasi untuk masing-masing project. Terutama karena aplikasi mobile harus bisa terhubung dengan backend Laravel, pastikan kedua perangkat berada di jaringan WiFi yang sama (jika dijalankan lokal) atau menggunakan server yang sudah di-hosting.</p>
+
+<h2>Bagian 1: Setup Backend Website (Laravel)</h2>
+<p>Jalankan langkah-langkah ini pada perangkat (komputer/laptop/server) yang akan bertindak sebagai server backend.</p>
+
+<ol>
+    <li>
+        <strong>Persiapan Sistem:</strong><br>
+        Pastikan Anda sudah menginstal PHP, Composer, Node.js, dan database manager (jika menggunakan MySQL). Dari file konfigurasi bawaan, secara default diarahkan ke <code>sqlite</code>.
+    </li>
+    <li>
+        <strong>Install Dependensi:</strong><br>
+        Buka terminal di dalam folder project Laravel (<code>Lognity</code>) dan jalankan:
+        <pre>composer install<br>npm install</pre>
+    </li>
+    <li>
+        <strong>Konfigurasi Environment:</strong><br>
+        Salin file konfigurasi <code>.env.example</code> menjadi <code>.env</code>. Di terminal Anda bisa menggunakan perintah:
+        <pre>copy .env.example .env</pre>
+    </li>
+    <li>
+        <strong>Generate Application Key:</strong><br>
+        Jalankan perintah ini untuk membuat key enkripsi yang unik:
+        <pre>php artisan key:generate</pre>
+    </li>
+    <li>
+        <strong>Setup Database:</strong><br>
+        <ul>
+            <li>Jika menggunakan <code>sqlite</code>, Anda cukup membuat file kosong bernama <code>database.sqlite</code> di dalam folder <code>database/</code> dan pastikan <code>.env</code> memiliki <code>DB_CONNECTION=sqlite</code>.</li>
+            <li>Jika menggunakan <code>mysql</code>, atur <code>DB_CONNECTION=mysql</code> beserta host, port, database, username, dan password di dalam file <code>.env</code>.</li>
+        </ul>
+        Jalankan migrasi tabel ke database:
+        <pre>php artisan migrate</pre>
+    </li>
+    <li>
+        <strong>Storage Link (Untuk upload gambar/file):</strong><br>
+        <pre>php artisan storage:link</pre>
+    </li>
+    <li>
+        <strong>Jalankan Server (Penting!):</strong><br>
+        Agar perangkat lain (seperti HP Android atau laptop lain) bisa mengakses backend ini, Anda tidak bisa menggunakan localhost biasa. Anda harus menjalankannya pada network host:
+        <pre>php artisan serve --host=0.0.0.0 --port=8000</pre>
+        <div class="note">
+            <strong>Catatan:</strong> Cari tahu IP Address dari perangkat Laravel ini (misalnya dengan menjalankan <code>ipconfig</code> di Windows atau <code>ifconfig</code> di Mac/Linux). Catat IP IPv4-nya (Contoh: <code>192.168.1.15</code>).
+        </div>
+    </li>
+</ol>
+
+<h2>Bagian 2: Setup Aplikasi Mobile (Flutter)</h2>
+<p>Jalankan langkah-langkah ini di perangkat yang digunakan untuk build aplikasi (misalnya perangkat dengan Android Studio/Flutter SDK).</p>
+
+<ol>
+    <li>
+        <strong>Install Dependensi Flutter:</strong><br>
+        Buka terminal di dalam folder project Flutter (<code>lognity_mobile</code>) dan jalankan:
+        <pre>flutter pub get</pre>
+    </li>
+    <li>
+        <strong>Sesuaikan URL API:</strong><br>
+        Karena backend sekarang berjalan di IP address jaringan (bukan lagi <code>127.0.0.1</code> lokal), Anda harus mengubah base URL pada file API Service.<br><br>
+        Buka file <code>lib/services/api_service.dart</code> dan ubah bagian URL:
+        <pre>// Ubah dari:<br>static const String baseUrl = 'http://127.0.0.1:8000/api';<br><br>// Menjadi IP Address perangkat Laravel Anda, contoh:<br>static const String baseUrl = 'http://192.168.1.15:8000/api';</pre>
+        
+        <div class="note">
+            <strong>Catatan Penting:</strong> Di dalam file <code>api_service.dart</code>, perhatikan juga path untuk memuat gambar/storage (sekitar baris 33). Jangan lupa ubah IP tersebut ke IP yang sama: <code>'http://192.168.1.15:8000/storage/$url'</code>.
+        </div>
+    </li>
+    <li>
+        <strong>Jalankan Aplikasi Mobile:</strong><br>
+        Setelah URL disesuaikan, sambungkan HP menggunakan kabel data (atau gunakan emulator). Lalu jalankan:
+        <pre>flutter run</pre>
+    </li>
+</ol>
+
+<h2>Jika Backend Akan Di-Hosting (Production)</h2>
+<p>Jika Anda menaruh project Laravel di layanan hosting publik (misalnya VPS, cPanel, dsb), ubah file <code>.env</code> di server Laravel Anda:</p>
+<pre>APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://namadomainanda.com</pre>
+
+<p>Lalu pada project Flutter (di <code>api_service.dart</code>), cukup ubah URL-nya menjadi:</p>
+<pre>static const String baseUrl = 'https://namadomainanda.com/api';
+// Untuk image storage sesuaikan pathnya: 'https://namadomainanda.com/storage/$url'</pre>
+
+</body>
+</html>
